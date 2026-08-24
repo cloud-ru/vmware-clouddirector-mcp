@@ -1,0 +1,48 @@
+# Node modules (will be installed in container)
+node_modules/**
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript build output (will be built in container)
+build/**
+*.tsbuildinfo
+
+# Development files
+.env
+.env.*
+!.env.example
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+LICENSE
+.editorconfig
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test files (if any)
+test/
+tests/
+*.test.ts
+*.spec.ts
+coverage/
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Docker files (not needed in image)
+Dockerfile
+.dockerignore
+docker-compose*.yml
