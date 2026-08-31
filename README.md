@@ -201,7 +201,7 @@ This guide shows how to build and run the VMware Cloud Director MCP server using
 
 1. **Clone the repository**
    ```bash
-   git clone https://git.sbercloud.tech/edlebedev/vmware-clouddirector-mcp.git
+   git clone https://github.com/cloud-ru/vmware-clouddirector-mcp.git
    cd vmware-clouddirector-mcp
    ```
 
