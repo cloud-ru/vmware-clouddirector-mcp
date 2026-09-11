@@ -12,6 +12,7 @@ import axios, { AxiosInstance } from 'axios';
 import https from 'https';
 import { console } from 'inspector';
 import { parseStringPromise } from 'xml2js';
+import { type AxiosError } from 'axios';
 
 interface VcdConfig {
   baseUrl: string;
@@ -60,6 +61,39 @@ interface ToolArguments {
 interface VcdSession {
   token: string;
   expires: Date;
+}
+
+function sanitizeError(error: unknown): string {
+  if (error instanceof Error) {
+    const sanitized: Record<string, any> = {
+      message: error.message,
+      name: error.name,
+    };
+
+    if (isAxiosError(error)) {
+      sanitized.code = error.code;
+      sanitized.status = error.response?.status;
+      sanitized.url = error.config?.url?.split('?')[0];
+      const responseData = error.response?.data as { message?: string } | undefined;
+      sanitized.message = responseData?.message || error.message;
+      return JSON.stringify(sanitized);
+    }
+
+    return JSON.stringify(sanitized);
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    const str = String(error);
+    return str.includes('password') || str.includes('token') || str.includes('authorization')
+      ? '[REDACTED]'
+      : str;
+  }
+
+  return '[REDACTED]';
+}
+
+function isAxiosError(error: unknown): error is AxiosError {
+  return error instanceof Error && 'isAxiosError' in error;
 }
 
 function getUrn(str: string) {
@@ -760,7 +794,11 @@ class VmwareCloudDirectorMCPServer {
       // Set the authorization header for future requests
       this.vcdClient.defaults.headers.common['Authorization'] = `Bearer ${this.session.token}`;
     } catch (error) {
-      throw new Error(`API token authentication failed: ${error instanceof Error ? error.message : String(error)}`);
+      const axiosErr = error as AxiosError | null;
+      const sanitizedMsg = axiosErr && isAxiosError(axiosErr)
+        ? `API token authentication failed (status: ${axiosErr.response?.status}, code: ${axiosErr.code})`
+        : 'API token authentication failed';
+      throw new Error(sanitizedMsg);
     }
   }
 
@@ -2914,12 +2952,21 @@ ${newVmSpecSection}
 
   private setupErrorHandling() {
     this.server.onerror = (error) => {
-      console.error('[MCP Error]', error);
+      console.error('[MCP Error]', sanitizeError(error));
     };
 
     process.on('SIGINT', async () => {
       await this.server.close();
       process.exit(0);
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('[Unhandled Rejection]', sanitizeError(reason));
+    });
+
+    process.on('uncaughtException', (error) => {
+      console.error('[Uncaught Exception]', sanitizeError(error));
+      process.exit(1);
     });
   }
 
@@ -2932,4 +2979,4 @@ ${newVmSpecSection}
 
 // Start the server
 const server = new VmwareCloudDirectorMCPServer();
-server.run().catch(console.error);
+server.run().catch(err => console.error('[Startup Error]', sanitizeError(err)));
