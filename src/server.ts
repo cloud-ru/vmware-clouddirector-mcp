@@ -104,7 +104,7 @@ class VmwareCloudDirectorMCPServer {
       baseURL: this.config.baseUrl,
       timeout: 30000,
       httpsAgent: new https.Agent({
-        rejectUnauthorized: false, // Set to true in production with valid certs
+        rejectUnauthorized: true, // Set to false in dev with self-signed certificate
       }),
       headers: {
         'Accept': `application/json;version=${this.config.apiVersion}`,
@@ -762,29 +762,7 @@ class VmwareCloudDirectorMCPServer {
     } catch (error) {
       throw new Error(`API token authentication failed: ${error instanceof Error ? error.message : String(error)}`);
     }
-}
-
-//   private async authenticate(): Promise<void> {
-//     try {
-//       const credentials = Buffer.from(`${this.config.username}@${this.config.org}:${this.config.password}`).toString('base64');
-//
-//       const response = await this.vcdClient.post('/cloudapi/1.0.0/sessions', null, {
-//         headers: {
-//           'Authorization': `Basic ${credentials}`
-//         }
-//       });
-//
-//       this.session = {
-//         token: response.headers['x-vmware-vcloud-access-token'],
-//         expires: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
-//       };
-//
-//       // Set the authorization header for future requests
-//       this.vcdClient.defaults.headers.common['Authorization'] = `Bearer ${this.session.token}`;
-//     } catch (error) {
-//       throw new Error(`Authentication failed: ${error instanceof Error ? error.message : String(error)}`);
-//     }
-//   }
+  }
 
   private async handleLogin() {
     await this.authenticate();
