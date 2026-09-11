@@ -2122,14 +2122,11 @@ ${newVmSpecSection}
         ],
       };
     } catch (error: any) {
-      const axiosError = error as any;
-      const responseDebug = axiosError.response ? {
-        status: axiosError.response.status,
-        statusText: axiosError.response.statusText,
-        data: axiosError.response.data
-      } : null;
-
-      throw new Error(`Failed to add disk: ${responseDebug ? `${responseDebug.status} ${responseDebug.statusText} - ${responseDebug.data}` : String(error)}`);
+      const axiosErr = error as AxiosError | null;
+      if (axiosErr && isAxiosError(axiosErr)) {
+        throw new Error(`Failed to add disk: ${axiosErr.response?.status} ${axiosErr.response?.statusText}`);
+      }
+      throw new Error(`Failed to add disk: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
