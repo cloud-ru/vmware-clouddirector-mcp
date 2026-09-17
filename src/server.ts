@@ -788,7 +788,7 @@ class VmwareCloudDirectorMCPServer {
 
       this.session = {
         token: accessToken,
-        expires: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
+        expires: new Date(Date.now() + 30 * 60 * 1000), // Default for Cloud Director 10.x.x (30 minutes)
       };
 
       // Set the authorization header for future requests

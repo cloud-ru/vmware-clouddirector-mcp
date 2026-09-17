@@ -173,7 +173,7 @@ A comprehensive Model Context Protocol (MCP) server that enables AI assistants l
 ### **Architecture**
 ```
 src/
-├── server.ts          # Main MCP server with all 32 tools
+├── server.ts          # Main MCP server with all 36 tools
 ├── index.ts           # Entry point and environment setup
 build/                 # Compiled TypeScript output
 ├── server.js          # Compiled server
