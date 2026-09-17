@@ -17,7 +17,7 @@ import { type AxiosError } from 'axios';
 interface VcdConfig {
   baseUrl: string;
   username: string;
-  password: string;
+  apiToken: string;
   org: string;
   apiVersion: string;
 }
@@ -128,7 +128,7 @@ class VmwareCloudDirectorMCPServer {
     this.config = {
       baseUrl: process.env.VCD_BASE_URL || '',
       username: process.env.VCD_USERNAME || '',
-      password: process.env.VCD_PASSWORD || '',
+      apiToken: process.env.VCD_API_TOKEN || '',
       org: process.env.VCD_ORG || '',
       apiVersion: process.env.VCD_API_VERSION || '37.2',
     };
@@ -251,7 +251,7 @@ class VmwareCloudDirectorMCPServer {
             inputSchema: {
               type: 'object',
               properties: {
-                vmname: {
+                name: {
                   type: 'string',
                   description: 'Virtual Machine Name',
                 },
@@ -776,7 +776,7 @@ class VmwareCloudDirectorMCPServer {
     try {
       const params = new URLSearchParams();
       params.append('grant_type', 'refresh_token');
-      params.append('refresh_token', `${this.config.password}`);
+      params.append('refresh_token', `${this.config.apiToken}`);
 
       const response = await this.vcdClient.post(`/oauth/tenant/${this.config.org}/token`, params, {
         headers: {
