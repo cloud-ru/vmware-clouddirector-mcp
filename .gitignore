@@ -48,6 +48,3 @@ pids
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov
-
-# Claude AI assistant files
-CLAUDE.md

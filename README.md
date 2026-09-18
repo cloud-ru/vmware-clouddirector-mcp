@@ -173,7 +173,7 @@ A comprehensive Model Context Protocol (MCP) server that enables AI assistants l
 ### **Architecture**
 ```
 src/
-├── server.ts          # Main MCP server with all 32 tools
+├── server.ts          # Main MCP server with all 36 tools
 ├── index.ts           # Entry point and environment setup
 build/                 # Compiled TypeScript output
 ├── server.js          # Compiled server
@@ -217,7 +217,7 @@ This guide shows how to build and run the VMware Cloud Director MCP server using
    --name vmware-clouddirector-mcp \
    -e VCD_BASE_URL=https://your_vcd_instance_address \
    -e VCD_USERNAME=your_username \
-   -e VCD_PASSWORD=your_api_token \
+   -e VCD_API_TOKEN=your_api_token \
    -e VCD_ORG=your_organization \
    -e VCD_API_VERSION=39.1 \
    vmware-clouddirector-mcp:latest &
@@ -245,11 +245,11 @@ For example, when using Claude Code in WSL on Win 10:
   claude mcp add vmware-cloud-director \
     -e VCD_BASE_URL=https://your_vcd_instance_address \
     -e VCD_USERNAME=your_username \
-    -e VCD_PASSWORD=your_api_token \
+    -e VCD_API_TOKEN=your_api_token \
     -e VCD_ORG=your_organization \
     -e VCD_API_VERSION=39.1 \
     -- \
-    docker run --rm -i --network host -e VCD_BASE_URL -e VCD_USERNAME -e VCD_PASSWORD -e VCD_ORG -e VCD_API_VERSION vmware-clouddirector-mcp:latest
+    docker run --rm -i --network host -e VCD_BASE_URL -e VCD_USERNAME -e VCD_API_TOKEN -e VCD_ORG -e VCD_API_VERSION vmware-clouddirector-mcp:latest
   ```
 
 ### Connecting to opencode MCP
@@ -273,7 +273,7 @@ In Claude, test connection by asking:
 |----------|----------|-------------|---------|
 | `VCD_BASE_URL` | Yes | VMware Cloud Director API URL | `https://vcd.example.com` |
 | `VCD_USERNAME` | No | Username | `admin` |
-| `VCD_PASSWORD` | Yes | API token | `your_api_token` |
+| `VCD_API_TOKEN` | Yes | API token | `your_api_token` |
 | `VCD_ORG` | Yes | Organization name | `my_org` |
 | `VCD_API_VERSION` | Yes | API version | `39.1` |
 

@@ -27,11 +27,14 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy built files and production dependencies
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/build ./build
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/build ./build
 
 # Set NODE_ENV to production
 ENV NODE_ENV=production
+
+# Switch to non-root user
+USER node
 
 # Health check for container
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
